@@ -2,8 +2,13 @@ import { ChatInput } from "./components/ChatInput";
 import { ChatWindow } from "./components/ChatWindow";
 import { Sidebar } from "./components/Sidebar";
 import { useChat } from "./hooks/useChat";
+import { useTheme } from "./hooks/useTheme";
 
 export default function App() {
+  const {
+    theme,
+    toggle
+  } = useTheme();
   const {
     sessions,
     activeId,
@@ -24,6 +29,8 @@ export default function App() {
         activeId={activeId}
         onSelect={openSession}
         onNew={() => void newSession()}
+        theme = {theme}
+        onToggleTheme = {toggle}
       />
       <main className="chat-main">
         <ChatWindow

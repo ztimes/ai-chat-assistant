@@ -91,6 +91,7 @@ body {
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: 13px;
+  color: var(--text);
 }
 .session-meta {
   flex-shrink: 0;
@@ -262,4 +263,32 @@ body {
   background: #eaf0f6;
   color: var(--accent);
   border: 1px solid var(--accent);
+}
+.theme-toggle{
+  padding: .1em .3em;
+  border: 1px solid var(--muted);
+}
+
+/* 深色模式 */
+[data-theme="dark"]{
+  --bg: #14171c;
+  --panel: #1a1f26;
+  --border: #2a323d;
+  --text: #e6e9ee;
+  --muted: #8b95a3;
+  --accent: #5b9bd8;
+  --accent-light: #22303f;
+  --user-bubble: #2f6fa8;
+  --assistant-bubble: #1f252d;
+  --code-bg: #11151a;
+}
+[data-theme="dark"] .send-btn:disabled {
+  background: #3a434f;
+  color: #7b8592;
+}
+[data-theme="dark"] .stop-btn {
+  background: #22303f;
+}
+[data-theme="dark"] .error-tip {
+  color: #ff8a80;
 }

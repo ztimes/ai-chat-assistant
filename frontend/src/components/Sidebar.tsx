@@ -1,13 +1,17 @@
 import type { Session } from "../types";
 
+import type { Theme }from "../hooks/useTheme";
+
 interface Props {
   sessions: Session[];
   activeId: string | null;
   onSelect: (id: string) => void;
   onNew: () => void;
+  theme: Theme;
+  onToggleTheme: () => void;
 }
 
-export function Sidebar({ sessions, activeId, onSelect, onNew }: Props) {
+export function Sidebar({ sessions, activeId, onSelect, onNew, theme, onToggleTheme }: Props) {
   return (
     <aside className="sidebar">
       <button className="new-chat-btn" onClick={onNew}>
@@ -25,7 +29,16 @@ export function Sidebar({ sessions, activeId, onSelect, onNew }: Props) {
           </button>
         ))}
       </div>
-      <div className="sidebar-footer">AI Chat Assistant</div>
+      <div className="sidebar-footer">
+        <span>AI Chat Assistant</span> &nbsp;
+        <button
+          className="theme-toggle"
+          onClick={onToggleTheme}
+          title={theme === "dark" ? "切换到浅色" : "切换到深色"}
+        >
+          {theme === "dark" ? "☀ 浅色" : "☾ 深色"}
+        </button>
+      </div>
     </aside>
   );
 }
