@@ -67,24 +67,53 @@ body {
   overflow-y: auto;
 }
 
-.session-item {
+.session-row {
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  margin-bottom: 2px;
+  padding-right: 4px;
+}
+.session-row:hover {
+  background: var(--bg);
+}
+.session-row.active {
+  background: var(--accent-light);
+}
+
+.session-select {
+  flex: 1;
+  min-width: 0;              /* 允许 title 溢出省略，不被删除按钮挤开 */
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
   border: none;
   background: transparent;
   padding: 9px 10px;
   border-radius: 8px;
   cursor: pointer;
   text-align: left;
-  margin-bottom: 2px;
 }
-.session-item:hover {
-  background: var(--bg);
+
+.session-delete {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+  opacity: 0;                /* 默认隐藏，悬停才出现 */
+  transition: opacity 0.15s;
 }
-.session-item.active {
-  background: var(--accent-light);
+.session-row:hover .session-delete {
+  opacity: 1;
+}
+.session-delete:hover {
+  color: #ff6b6b;
 }
 .session-title {
   overflow: hidden;

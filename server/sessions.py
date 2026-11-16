@@ -88,5 +88,13 @@ class SessionStore:
             raise KeyError(f"session not found: {session_id}")
         return [m.to_dict() for m in session.messages]
 
+    def delete(self,session_id: str) -> bool:
+        """删除会话
+        用dict.pop(id,None):
+        -键不存在 返回 None，不会抛 KeyError；
+        -返回 bool 告诉路由层 "是否真的删除了"，用于 404判断。 
+        """
+        return self._sessions.pop(session_id, None) is not None
+
 
 store = SessionStore()

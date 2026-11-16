@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { createSession, getMessages, getSessions, streamChat } from "../api/chat";
+import { createSession, deleteSession, getMessages, getSessions, streamChat } from "../api/chat";
 import type { Message, Session } from "../types";
 
 function localMessage(role: "user" | "assistant", content: string): Message {
@@ -100,6 +100,38 @@ export function useChat() {
     abortRef.current?.abort();
   }, []);
 
+  /**
+   * 删除会话
+   * -服务端删除后才更新本地列表（不乐观删除，避免删除失败界面和实际效果不一致）
+   * -删的是当前会话 -> 切到剩余最近一个；全删光 -> 自动新建
+   */
+  const removeSession = useCallback(
+    async(id: string) => {
+      try{
+        await deleteSession(id);
+      }catch(e){
+        setError((e as Error).message);
+        return;
+      }
+
+      setSessions((prev) => prev.filter(s => s.id !== id));
+
+      if(id === activeId){
+        setActiveId(null);
+        setMessages([]);
+
+        const rest = sessions.filter(s => s.id !== id);
+        if(rest.length > 0){
+          await openSession(rest[0].id)
+        }else{
+          await newSession()
+        }
+      }
+    },
+    [activeId, sessions, openSession, newSession],
+  )
+
+
   // 初始化：加载会话列表并打开最近一个（没有则新建）
   useEffect(() => {
     (async () => {
@@ -125,5 +157,6 @@ export function useChat() {
     stop,
     openSession,
     newSession,
+    removeSession,
   };
 }

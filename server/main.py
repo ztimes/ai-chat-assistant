@@ -49,6 +49,12 @@ def get_messages(session_id: str):
     except KeyError:
         raise HTTPException(status_code=404, detail="session not found")
 
+@app.delete("/api/sessions/{session_id}")
+def delete_session(session_id: str):
+    if not store.delete(session_id):
+        raise HTTPException(status_code=404, detail="session not found")
+    return {"ok": True}
+
 
 @app.post("/api/chat/stream")
 async def chat_stream(req: ChatRequest):
@@ -76,7 +82,10 @@ async def chat_stream(req: ChatRequest):
                 yield f"data: {json.dumps({'delta': delta}, ensure_ascii=False)}\n\n"
         finally:
             if collected:
-                store.add_message(req.session_id, "assistant", "".join(collected))
+                try:
+                    store.add_message(req.session_id, "assistant", "".join(collected))
+                except KeyError:
+                    pass  #会话在生成过程中被删除，无处落库
         yield "data: [DONE]\n\n"
 
     return StreamingResponse(

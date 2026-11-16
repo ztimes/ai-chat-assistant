@@ -20,6 +20,7 @@ export default function App() {
     stop,
     openSession,
     newSession,
+    removeSession,
   } = useChat();
 
   return (
@@ -31,6 +32,7 @@ export default function App() {
         onNew={() => void newSession()}
         theme = {theme}
         onToggleTheme = {toggle}
+        onDelete = {(id)=> void removeSession(id)}
       />
       <main className="chat-main">
         <ChatWindow

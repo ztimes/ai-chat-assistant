@@ -9,9 +9,10 @@ interface Props {
   onNew: () => void;
   theme: Theme;
   onToggleTheme: () => void;
+  onDelete: (id: string) => void;
 }
 
-export function Sidebar({ sessions, activeId, onSelect, onNew, theme, onToggleTheme }: Props) {
+export function Sidebar({ sessions, activeId, onSelect, onNew, theme, onToggleTheme, onDelete }: Props) {
   return (
     <aside className="sidebar">
       <button className="new-chat-btn" onClick={onNew}>
@@ -19,14 +20,30 @@ export function Sidebar({ sessions, activeId, onSelect, onNew, theme, onToggleTh
       </button>
       <div className="session-list">
         {sessions.map((s) => (
-          <button
+          <div
             key={s.id}
-            className={`session-item ${s.id === activeId ? "active" : ""}`}
-            onClick={() => onSelect(s.id)}
+            className={`session-row ${s.id === activeId ? "active" : ""}`}
           >
-            <span className="session-title">{s.title}</span>
-            <span className="session-meta">{s.messageCount} 条</span>
-          </button>
+            <button
+              className="session-select"
+              onClick={() => onSelect(s.id)}
+              title={s.title}
+            >
+              <span className="session-title">{s.title}</span>
+              <span className="session-meta">{s.messageCount} 条</span>
+            </button>
+            <button
+              className="session-delete"
+              onClick={() => {
+                if (window.confirm(`删除会话「${s.title}」？`)) {
+                  onDelete(s.id);
+                }
+              }}
+              title="删除会话"
+            >
+              ✕
+            </button>
+          </div>
         ))}
       </div>
       <div className="sidebar-footer">

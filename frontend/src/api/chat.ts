@@ -75,3 +75,9 @@ export async function streamChat(
     }
   }
 }
+
+
+
+export function deleteSession(sessionId: string):Promise<void> {
+  return request<void>(`/api/sessions/${sessionId}`, {method:"DELETE"});
+}
