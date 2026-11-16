@@ -144,6 +144,46 @@ body {
   min-width: 0;
 }
 
+/* ---------- Chat window ---------- */
+.chat-header {
+  flex-shrink: 0;                /* 不参与 flex 收缩，滚动时不动 */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 20px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+}
+
+.chat-title {
+  font-size: 13px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.export-btn {
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.export-btn:hover:not(:disabled) {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+.export-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 .chat-window {
   flex: 1;
   overflow-y: auto;

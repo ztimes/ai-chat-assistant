@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createSession, deleteSession, getMessages, getSessions, streamChat } from "../api/chat";
 import type { Message, Session } from "../types";
+import { buildFileName, downloadTextFile, messagesToMarkdown } from "../utils/exportMarkdown";
 
 function localMessage(role: "user" | "assistant", content: string): Message {
   return {
@@ -132,6 +133,23 @@ export function useChat() {
   )
 
 
+    /**
+   * 导出当前会话为 Markdown
+   * - 流式生成中不导出：此时 messages 里还没有正在生成的那条回复，
+   *   导出来会缺最后一段，用户会以为丢消息了
+   * - 标题取的是会话列表里的 title（后端自动生成的首条消息摘要）
+   */
+  const exportCurrent = useCallback(() => {
+    if (streaming || messages.length === 0) return;
+
+    const current = sessions.find((s) => s.id === activeId);
+    if (!current) return;
+
+    const md = messagesToMarkdown(current.title, messages);
+    downloadTextFile(buildFileName(current.title), md);
+  }, [sessions, activeId, messages, streaming]);
+
+
   // 初始化：加载会话列表并打开最近一个（没有则新建）
   useEffect(() => {
     (async () => {
@@ -158,5 +176,6 @@ export function useChat() {
     openSession,
     newSession,
     removeSession,
+    exportCurrent,
   };
 }

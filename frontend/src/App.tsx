@@ -21,7 +21,11 @@ export default function App() {
     openSession,
     newSession,
     removeSession,
+    exportCurrent,
   } = useChat();
+
+  // 当前会话标题（找不到就给个默认值，避免 header 空着）
+  const activeTitle = sessions.find((s) => s.id === activeId)?.title ?? "新会话";
 
   return (
     <div className="app">
@@ -40,6 +44,8 @@ export default function App() {
           streamText={streamText}
           streaming={streaming}
           error={error}
+          title={activeTitle}
+          onExport={exportCurrent}
         />
         <ChatInput
           disabled={!activeId}

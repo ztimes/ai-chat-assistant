@@ -7,9 +7,18 @@ interface Props {
   streamText: string;
   streaming: boolean;
   error: string | null;
+  title: string;
+  onExport: () => void;
 }
 
-export function ChatWindow({ messages, streamText, streaming, error }: Props) {
+export function ChatWindow({
+  messages,
+  streamText,
+  streaming,
+  error,
+  title,
+  onExport,
+}: Props) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   // 新内容时滚动到底部（流式期间也跟随）
@@ -18,33 +27,56 @@ export function ChatWindow({ messages, streamText, streaming, error }: Props) {
   }, [messages, streamText]);
 
   return (
-    <div className="chat-window">
-      {messages.length === 0 && !streaming && (
-        <div className="empty-hint">输入消息开始对话（Mock 模式开箱可用）</div>
-      )}
-      {messages.map((m) => (
-        <div key={m.id} className={`bubble-row ${m.role}`}>
-          <div className={`bubble ${m.role}`}>
-            <MarkdownLite text={m.content} />
+    <>
+      <header className="chat-header">
+        <span className="chat-title" title={title}>
+          {title}
+        </span>
+        <button
+          className="export-btn"
+          onClick={onExport}
+          disabled={streaming || messages.length === 0}
+          title={
+            streaming
+              ? "生成中，结束后可导出"
+              : messages.length === 0
+                ? "当前会话没有消息"
+                : "导出为 Markdown"
+          }
+        >
+          导出 Markdown
+        </button>
+      </header>
+      <div className="chat-window">
+        {messages.length === 0 && !streaming && (
+          <div className="empty-hint">
+            输入消息开始对话（Mock 模式开箱可用）
           </div>
-        </div>
-      ))}
-      {streaming && (
-        <div className="bubble-row assistant">
-          <div className="bubble assistant streaming">
-            {streamText ? (
-              <>
-                <MarkdownLite text={streamText} />
-                <span className="cursor" />
-              </>
-            ) : (
-              <span className="thinking">正在思考…</span>
-            )}
+        )}
+        {messages.map((m) => (
+          <div key={m.id} className={`bubble-row ${m.role}`}>
+            <div className={`bubble ${m.role}`}>
+              <MarkdownLite text={m.content} />
+            </div>
           </div>
-        </div>
-      )}
-      {error && <div className="error-tip">{error}</div>}
-      <div ref={bottomRef} />
-    </div>
+        ))}
+        {streaming && (
+          <div className="bubble-row assistant">
+            <div className="bubble assistant streaming">
+              {streamText ? (
+                <>
+                  <MarkdownLite text={streamText} />
+                  <span className="cursor" />
+                </>
+              ) : (
+                <span className="thinking">正在思考…</span>
+              )}
+            </div>
+          </div>
+        )}
+        {error && <div className="error-tip">{error}</div>}
+        <div ref={bottomRef} />
+      </div>
+    </>
   );
 }
